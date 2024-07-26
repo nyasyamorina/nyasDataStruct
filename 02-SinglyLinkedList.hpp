@@ -63,7 +63,7 @@ public:
     // 释放链表的时候需要先把链清空了
     ~SinglyLinkedList()
     {
-        empty();
+        this->empty();
     }
 
     // 复制已有的链表
@@ -139,6 +139,13 @@ public:
                 this->_begin = node_a = ndtype::create(node_b->data);
                 node_b = node_b->next;
             }
+            // 因为进入这里时 node_a 已经是 nullptr 了, 所以需要重新索引 node_a 到链表末端
+            else
+            {
+                node_a = this->end();
+                // 更改这整个方法的结构是可以做到更优的,
+                // 不过确实有点懒了, 总之先塞一个 TODO 在这里
+            }
             while (node_b != nullptr)
             {
                 // 为当前链表的末端节点创建下一个节点
@@ -166,7 +173,7 @@ public:
             return *this;
         }
         this->_begin  = exchange(l._begin, nullptr);
-        this->_length = exchange(l._length, nullptr);
+        this->_length = exchange(l._length, 0);
         return *this;
     }
 

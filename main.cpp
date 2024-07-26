@@ -4,6 +4,7 @@
 
 #include "01-List.hpp"
 #include "02-SinglyLinkedList.hpp"
+#include "03-DoublyLinkedList.hpp"
 
 using std::cout;
 using std::endl;
@@ -29,7 +30,8 @@ template<class T> bool check_list(T const& list, typename T::eltype const* arr, 
     return true;
 }
 
-// 测试线性表方法的通用函数 (push, insert, pop, find, reverse, remove, empty)
+// 测试线性表方法的通用函数 (push, insert, pop, find, reverse, remove, empty),
+// 不考虑边缘情况, 无它, 只因我懒
 template<class T> std::string test_list()
 {
     T list;
@@ -98,4 +100,7 @@ int main()
 
     std::string info2 = test_list<SinglyLinkedList<int>>();
     cout << "SinglyLinkedList test: " << info2 << endl;
+
+    std::string info3 = test_list<DoublyLinkedList<int>>();
+    cout << "DoublyLinkedList test: " << info3 << endl;
 }
