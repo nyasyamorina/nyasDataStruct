@@ -1,15 +1,13 @@
+#pragma once
 #include "utils.hpp"
+
 
 // 用于储存类型 T 的顺序表
 template<class T> class List
 {
 public:
     // 元素类型
-    using eltype = T;
-    // 使用无符号整数可以避免负数检测
-    using sztype = unsigned long long;
-    // 这个值表示非法索引 (或数组大小)
-    constexpr static sztype invalid_size = static_cast<sztype>(-1);
+    typedef T eltype;
 
 protected:
     // 储存元素的数组
@@ -77,7 +75,7 @@ public:
         delete[] this->_data;
     }
 
-    // 复制已有顺序表
+    // 复制已有的顺序表
     List(List const& l)
     : _data(nullptr), _length(l._length), _capacity(l._capacity) {
         // 分配新数组并且复制数组内容
@@ -87,7 +85,7 @@ public:
             memcpy(this->_data, l._data, l._capacity * sizeof(eltype));
         }
     }
-    // 复制已有顺序表
+    // 复制已有的顺序表
     List & operator =(List const& l)
     {
         // 如果传入的参数就是本顺序表, 则跳过
@@ -207,7 +205,7 @@ public:
         // ptr 用于历遍数组
         eltype * ptr = this->_data + idx;
         // end 指向当前数组末端元素的后一个位置 (用于判断 ptr 是否历遍完数组)
-        eltypt * end = this->_data + this->_length;
+        eltype * end = this->_data + this->_length;
         // tmp 用于存放暂时多出来的元素
         eltype tmp = *ptr;
         while (ptr < end)
@@ -305,7 +303,6 @@ public:
                 ptr_a++; ptr_b++;
             }
         }
-
     }
 
     // 把顺序表逆序
@@ -314,12 +311,12 @@ public:
         // 使用两个指针, 一个从头开始, 另一个从尾开始, 交换两个指针指向的值
         eltype * ptr_a = this->_data;
         eltype * ptr_b = this->_data + (this->_length - 1);
-        // end 指向数组中间 (必要的话靠后一点) 的元素, 表示 ptr_a 的结束位置
-        eltype * end = this->_data + (this->_length / 2 + (this->_length & 1));
+        // end 指向数组中间 (靠后一点) 的元素, 表示 ptr_a 的结束位置
+        eltype * end = this->_data + (this->_length / 2);
         while (ptr_a < end)
         {
             // 交互两指针指向的值
-            swap(*ptr_a, ptr_b);
+            swap(*ptr_a, *ptr_b);
             // 下一个
             ptr_a++; ptr_b--;
 
