@@ -3,10 +3,9 @@
 
 
 // 用于储存类型 T 的顺序表
-template<class T> class List
+template<class T> class ContinuousList : public List<T> /* 因为顺序表是线性表的一种, 所以继承线性表并实现里面的接口方法 */
 {
 public:
-    // 元素类型
     typedef T eltype;
 
 protected:
@@ -67,16 +66,16 @@ protected:
 
 public:
     // 初始化空顺序表
-    List()
+    ContinuousList()
     : _data(nullptr), _length(0), _capacity(0) {}
-    // 释放顺序表时也要把内部数组也释放了
-    ~List()
+    // 当顺序表被销毁前会自动调用这个函数, 在这里主要是确保申请了的内存被释放
+    ~ContinuousList()
     {
-        delete[] this->_data;
+        this->empty();
     }
 
     // 复制已有的顺序表
-    List(List const& l)
+    ContinuousList(ContinuousList const& l)
     : _data(nullptr), _length(l._length), _capacity(l._capacity) {
         // 分配新数组并且复制数组内容
         if (l._capacity > 0)
@@ -86,7 +85,7 @@ public:
         }
     }
     // 复制已有的顺序表
-    List & operator =(List const& l)
+    ContinuousList & operator =(ContinuousList const& l)
     {
         // 如果传入的参数就是本顺序表, 则跳过
         if (this == &l)
@@ -118,10 +117,10 @@ public:
     }
 
     // 移动已有的顺序表 (移动就是把传入对象的东西全部偷走, 并且把空值塞给传入对象让它空手而归)
-    List(List && l)
+    ContinuousList(ContinuousList && l)
     : _data(exchange(l._data, nullptr)), _length(exchange(l._length, 0)), _capacity(l._capacity, 0) {}
     // 移动已有的顺序表 (移动就是把传入对象的东西全部偷走, 并且把空值塞给传入对象让它空手而归)
-    List & operator =(List && l)
+    ContinuousList & operator =(ContinuousList && l)
     {
         // 如果传入的参数就是本顺序表, 则跳过
         if (this == &l)
@@ -147,8 +146,8 @@ public:
     {
         return this->_data;
     }
-    // 返回当前长度
-    sztype length() const /* 如果没有定义可变成员方法, 那无论顺序表可变不可变都会调用这个方法 */
+    // 返回当前长度 (这个是父类已经声明的虚方法, 覆写它)
+    virtual sztype length() const override /* override 就表示子类覆写父类的虚方法 */
     {
         return this->_length;
     }
@@ -159,12 +158,12 @@ public:
     }
 
     // 检查顺序表是不是空的
-    bool is_empty() const
+    virtual bool is_empty() const override
     {
         return this->_length == 0;
     }
     // 清空顺序表
-    void empty()
+    virtual void empty() override
     {
         // 释放数组
         delete[] this->_data;
@@ -175,18 +174,18 @@ public:
     }
 
     // 索引元素 (返回引用是为了可以在外部修改顺序表里的值)
-    eltype & operator [](sztype idx)
+    virtual eltype & operator [](sztype idx) override
     {
         return this->_data[idx];
     }
     // 索引元素 (返回引用是为了避免创建新对象)
-    eltype const& operator [](sztype idx) const
+    virtual eltype const& operator [](sztype idx) const override
     {
         return this->_data[idx];
     }
 
     // 把值 x 插到顺序表的末端
-    void push(eltype const& x)
+    virtual void push(eltype const& x) override
     {
         // 确保数组可以多塞一个元素
         this->_expand(this->_length + 1);
@@ -196,7 +195,7 @@ public:
         this->_length++;
     }
     // 把值 x 插入到位置 idx
-    void insert(sztype idx, eltype const& x)
+    virtual void insert(sztype idx, eltype const& x) override
     {
         // 确保数组可以多塞一个元素
         this->_expand(this->_length + 1);
@@ -228,8 +227,9 @@ public:
         // 递增长度
         this->_length++;
     }
+
     // 删除第 idx 个元素并返回它的值
-    eltype pop(sztype idx)
+    virtual eltype pop(sztype idx) override
     {
         // 拿到第 idx 个元素的值
         eltype result = this->_data[idx];
@@ -255,9 +255,19 @@ public:
         // 返回数值
         return result;
     }
+    // 使用超快的方法覆写弹出最后一个元素
+    virtual eltype pop_last() override
+    {
+        // 拿到最后一个元素
+        eltype result = this->_data[this->_length - 1];
+        // 长度直接减一就完事了
+        this->_length--;
+        return result;
+    }
+
 
     // 从左到右查找第一个值为 x 的元素并返回其索引
-    sztype find(eltype const& x) const
+    virtual sztype find(eltype const& x) const override
     {
         // ptr 用于历遍数组
         eltype * ptr = this->_data;
@@ -276,7 +286,7 @@ public:
         return invalid_size;
     }
     // 删除所有值为 x 的元素
-    void remove(eltype const& x)
+    virtual void remove(eltype const& x) override
     {
         // 注意到如果索引为 k 的元素前面有 m 个值为 x 的元素,
         // 那么删除所有 x 后这个元素的索引应为 k-m.
@@ -306,7 +316,7 @@ public:
     }
 
     // 把顺序表逆序
-    void reverse()
+    virtual void reverse() override
     {
         // 使用两个指针, 一个从头开始, 另一个从尾开始, 交换两个指针指向的值
         eltype * ptr_a = this->_data;

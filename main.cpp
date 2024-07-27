@@ -2,7 +2,8 @@
 #include <iostream>
 #include <string>
 
-#include "01-List.hpp"
+#include "utils.hpp"
+#include "01-ContinuousList.hpp"
 #include "02-SinglyLinkedList.hpp"
 #include "03-DoublyLinkedList.hpp"
 
@@ -95,8 +96,8 @@ template<class T> std::string test_list()
 
 int main()
 {
-    std::string info1 = test_list<List<int>>();
-    cout << "List test: " << info1 << endl;
+    std::string info1 = test_list<ContinuousList<int>>();
+    cout << "ContinuousList test: " << info1 << endl;
 
     std::string info2 = test_list<SinglyLinkedList<int>>();
     cout << "SinglyLinkedList test: " << info2 << endl;
