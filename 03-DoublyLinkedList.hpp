@@ -166,10 +166,6 @@ public:
         return this->_length;
     }
 
-    virtual bool is_empty() const override
-    {
-        return this->_length == 0;
-    }
     virtual void empty() override
     {
         ndtype * node = this->_first;

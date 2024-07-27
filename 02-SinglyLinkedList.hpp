@@ -177,11 +177,6 @@ public:
         return *this;
     }
 
-    // 检查链表是不是空的
-    virtual bool is_empty() const override
-    {
-        return this->_length == 0;
-    }
     // 清空链表
     virtual void empty() override
     {

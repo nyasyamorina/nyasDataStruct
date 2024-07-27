@@ -157,11 +157,6 @@ public:
         return this->_capacity;
     }
 
-    // 检查顺序表是不是空的
-    virtual bool is_empty() const override
-    {
-        return this->_length == 0;
-    }
     // 清空顺序表
     virtual void empty() override
     {
