@@ -323,4 +323,26 @@ public:
             // 上面两行可以合并为 `swap(*(ptr_a++), *(ptr_b--));`
         }
     }
+
+
+    // 下面一整块都是顺序迭代器用于支持 C++ 语法 `for (eltype & el : list)`
+    // 具体细节可以看看单链表对顺序迭代器的实现.
+
+    eltype * begin()
+    {
+        return this->_data;
+    }
+    eltype const* begin() const
+    {
+        return this->_data;
+    }
+
+    eltype * end()
+    {
+        return this->_data + this->_length;
+    }
+    eltype const* end() const
+    {
+        return this->_data + this->_length;
+    }
 };

@@ -19,7 +19,7 @@ public:
         Node * next;
 
         // 检查节点的下一个是否为空
-        bool is_end() const
+        bool is_stop() const
         {
             return this->next == nullptr;
         }
@@ -52,14 +52,14 @@ public:
 
 protected:
     // 单链表的头节点
-    ndtype * _begin;
+    ndtype * _start;
     // 单链表的长度
     sztype _length;
 
 public:
     // 初始化空链表 (长度为0)
     SinglyLinkedList()
-    : _begin(nullptr), _length(0) {}
+    : _start(nullptr), _length(0) {}
     // 释放链表的时候需要先把链清空了
     ~SinglyLinkedList()
     {
@@ -68,16 +68,16 @@ public:
 
     // 复制已有的链表
     SinglyLinkedList(SinglyLinkedList const& l)
-    : _begin(nullptr), _length(l._length) {
+    : _start(nullptr), _length(l._length) {
         // 如果链的长度为 0 那就不需要创建链了
         if (l._length != 0)
         {
             // 创建头节点
-            this->_begin = ndtype::create(l._begin->data);
+            this->_start = ndtype::create(l._start->data);
             // 历遍传入链表的节点并在当前链表创建相应的节点
-            ndtype * node_a = this->_begin; // 当前链表的末端节点
-            ndtype * node_b = l._begin;     // 用于历遍传入链表的节点
-            while (!node_b->is_end())
+            ndtype * node_a = this->_start; // 当前链表的末端节点
+            ndtype * node_b = l._start;     // 用于历遍传入链表的节点
+            while (!node_b->is_stop())
             {
                 // 进入传入链表的下一个节点
                 node_b = node_b->next;
@@ -99,8 +99,8 @@ public:
 
         // 直接从传入链表 B 复制到当前链表 A (共同长度部分)
         sztype co_length = min(this->_length, l._length);
-        ndtype * node_a = this->_begin; // 用于历遍当前链表
-        ndtype * node_b = l._begin;     // 用于历遍传入链表
+        ndtype * node_a = this->_start; // 用于历遍当前链表
+        ndtype * node_b = l._start;     // 用于历遍传入链表
         for (sztype idx = 0; idx < co_length; idx++)
         {
             // 复制值
@@ -124,9 +124,9 @@ public:
                 node_a = next_node;
             }
             // 如果传入链表是空的, 需要把当前链表的头节点也设为空
-            if (l._begin == nullptr)
+            if (l._start == nullptr)
             {
-                this->_begin = nullptr;
+                this->_start = nullptr;
             }
         }
 
@@ -134,15 +134,15 @@ public:
         if (node_b != nullptr)
         {
             // 如果当前链表是空的, 那么要先创建头节点
-            if (this->_begin == nullptr)
+            if (this->_start == nullptr)
             {
-                this->_begin = node_a = ndtype::create(node_b->data);
+                this->_start = node_a = ndtype::create(node_b->data);
                 node_b = node_b->next;
             }
             // 因为进入这里时 node_a 已经是 nullptr 了, 所以需要重新索引 node_a 到链表末端
             else
             {
-                node_a = this->end();
+                node_a = this->stop();
                 // 更改这整个方法的结构是可以做到更优的,
                 // 不过确实有点懒了, 总之先塞一个 TODO 在这里
             }
@@ -163,7 +163,7 @@ public:
 
     // 移动已有的链表 (移动就是把传入对象的东西全部偷走, 并且把空值塞给传入对象让它空手而归)
     SinglyLinkedList(SinglyLinkedList && l)
-    : _begin(exchange(l._begin, nullptr)), _length(exchange(l._length, 0)) {}
+    : _start(exchange(l._start, nullptr)), _length(exchange(l._length, 0)) {}
     // 移动已有的链表 (移动就是把传入对象的东西全部偷走, 并且把空值塞给传入对象让它空手而归)
     SinglyLinkedList & operator =(SinglyLinkedList && l)
     {
@@ -172,23 +172,23 @@ public:
         {
             return *this;
         }
-        this->_begin  = exchange(l._begin, nullptr);
+        this->_start  = exchange(l._start, nullptr);
         this->_length = exchange(l._length, 0);
         return *this;
     }
 
     // 返回头节点
-    ndtype * begin()
+    ndtype * start()
     {
-        return this->_begin;
+        return this->_start;
     }
     // 返回头节点
-    ndtype const* /* 返回不可变指针 */ begin() const /* 当链表不可变时调用这个方法 */
+    ndtype const* /* 返回不可变指针 */ start() const /* 当链表不可变时调用这个方法 */
     {
-        return this->_begin;
+        return this->_start;
     }
     // 返回末端节点
-    ndtype * end()
+    ndtype * stop()
     {
         // 如果链表为空, 则返回空指针
         if (this->_length == 0)
@@ -196,8 +196,8 @@ public:
             return nullptr;
         }
         // node 用于历遍链
-        ndtype * node = this->_begin;
-        while (!node->is_end())
+        ndtype * node = this->_start;
+        while (!node->is_stop())
         {
             // 转到下一个节点
             node = node->next;
@@ -205,7 +205,7 @@ public:
         return node;
     }
     // 返回末端节点 (不可变版本)
-    ndtype const* end() const
+    ndtype const* stop() const
     {
         // 如果链表为空, 则返回空指针
         if (this->_length == 0)
@@ -213,8 +213,8 @@ public:
             return nullptr;
         }
         // node 用于历遍链
-        ndtype const* node = this->_begin;
-        while (!node->is_end())
+        ndtype const* node = this->_start;
+        while (!node->is_stop())
         {
             // 转到下一个节点
             node = node->next;
@@ -236,7 +236,7 @@ public:
     void empty()
     {
         // node 用于历遍所有节点
-        ndtype * node = this->_begin;
+        ndtype * node = this->_start;
         // 历遍链
         while (node != nullptr)
         {
@@ -248,7 +248,7 @@ public:
             node = next_node;
         }
         // 设为空链表
-        this->_begin = nullptr;
+        this->_start = nullptr;
         this->_length = 0;
     }
 
@@ -256,7 +256,7 @@ public:
     ndtype * get(sztype idx)
     {
         // node 用于历遍链
-        ndtype * node = this->_begin;
+        ndtype * node = this->_start;
         // 递减 idx 当达到 0 时即得到所需节点
         for (; idx > 0; idx--)
         {
@@ -269,7 +269,7 @@ public:
     ndtype const* get(sztype idx) const
     {
         // node 用于历遍链
-        ndtype const* node = this->_begin;
+        ndtype const* node = this->_start;
         // 递减 idx 当达到 0 时即得到所需节点
         for (; idx > 0; idx--)
         {
@@ -296,14 +296,14 @@ public:
         // 创建新节点
         ndtype * new_node = ndtype::create(x);
         // 如果当前链表为空, 那么新节点就是头节点
-        if (this->_begin == nullptr)
+        if (this->_start == nullptr)
         {
-            this->_begin = new_node;
+            this->_start = new_node;
         }
         // 否则在末端节点后面加入新节点
         else
         {
-            this->end()->next = new_node;
+            this->stop()->next = new_node;
         }
         // 链表长度 + 1
         this->_length++;
@@ -317,9 +317,9 @@ public:
         if (idx == 0)
         {
             // 原本的头节点是新头节点的下一个
-            new_node->next = this->_begin;
+            new_node->next = this->_start;
             // 声明新的头节点
-            this->_begin = new_node;
+            this->_start = new_node;
         }
         // 否则在第 idx-1 个节点后面插入新节点
         else
@@ -342,9 +342,9 @@ public:
         if (idx == 0)
         {
             // 先抓住原本的头节点
-            node = this->_begin;
+            node = this->_start;
             // 声明新的头节点
-            this->_begin = node->next;
+            this->_start = node->next;
         }
         else
         {
@@ -370,7 +370,7 @@ public:
     sztype find(eltype const& x) const
     {
         // node 用于历遍链
-        ndtype * node = this->_begin;
+        ndtype * node = this->_start;
         // 历遍链
         for (sztype idx = 0; idx < this->_length; idx++)
         {
@@ -389,12 +389,12 @@ public:
     void remove(eltype const& x)
     {
         // 创建一个假的链头方便后续操作
-        ndtype * fake_begin = ndtype::create();
-        fake_begin->next = this->_begin;
+        ndtype * fake_start = ndtype::create();
+        fake_start->next = this->_start;
         // node 用作历遍链
-        ndtype * node = this->_begin;
+        ndtype * node = this->_start;
         // prev 和 next 分别为 node 的上一个和下一个
-        ndtype * prev = fake_begin;
+        ndtype * prev = fake_start;
         ndtype * next /* = node->next */;
         // 历遍链表
         while (node != nullptr)
@@ -426,14 +426,14 @@ public:
             }
         }
         // 还原链头
-        this->_begin = fake_begin->next;
+        this->_start = fake_start->next;
     }
 
     // 把链表逆序
     void reverse()
     {
         // node 用作历遍链
-        ndtype * node = this->_begin;
+        ndtype * node = this->_start;
         // prev 为原本链表节点的上一个
         ndtype * prev = nullptr;
         // 历遍链表
@@ -448,6 +448,89 @@ public:
             node = next;
         }
         // 更改链头
-        this->_begin = prev;
+        this->_start = prev;
+    }
+
+
+    // 下面一整块都是顺序迭代器用于支持 C++ 语法 `for (eltype & el : list)`
+    /* 迭代器循环 `for (eltype & el : list)` 完全等价于以下语句:
+
+        iter __iter = list.begin();
+        iter __end  = list.end();
+        while (__iter != __end)
+        {
+            eltype & el = *__iter;
+            // things in for loop
+            __iter++;
+        }
+
+    所以需要先实现迭代器类型 `iter`, 然后给线性表实现 `iter begin()` 和 `iter end()`,
+    而类型 `iter` 需要实现 `eltype & operator *()`, `iter & operator ++()` 和 `bool operator !=(iter const&) const`
+    */
+
+    class iter
+    {
+    public:
+        // 当前迭代器指向的节点
+        ndtype * node;
+
+        // 返回节点里数据的引用
+        eltype & operator *()
+        {
+            return this->node->data;
+        }
+        // 迭代器递增, 也就是换到下一个节点
+        iter & operator ++()
+        {
+            this->node = this->node->next;
+            return *this;
+        }
+        // 迭代器比较是否相等, 也就是比较节点是否相等
+        bool operator !=(iter const& other) const
+        {
+            return this->node != other.node;
+        }
+    };
+
+    // 返回指向链头的迭代器
+    iter begin()
+    {
+        return iter{this->_start};
+    }
+    // 返回指向链尾下一个节点的迭代器, 也就是空
+    iter end()
+    {
+        return iter{nullptr};
+    }
+
+    // 对于不可变链表其实还需要额外实现常值迭代器
+
+    class const_iter
+    {
+    public:
+        ndtype const* node;
+
+        eltype const& operator *()
+        {
+            return this->node->data;
+        }
+        const_iter & operator ++()
+        {
+            this->node = this->node->next;
+            return *this;
+        }
+        bool operator !=(const_iter const& other) const
+        {
+            return this->node != other.node;
+        }
+    };
+
+    const_iter begin() const
+    {
+        return const_iter{this->_start};
+    }
+    const_iter end() const
+    {
+        return const_iter{nullptr};
     }
 };

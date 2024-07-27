@@ -20,9 +20,9 @@ template<class T> bool check_list(T const& list, typename T::eltype const* arr, 
         return false;
     }
     // 然后逐个元素检查值
-    for (sztype idx = 0; idx < n; idx++)
+    for (typename T::eltype const& elements : list) // 使用迭代器实现
     {
-        if (list[idx] != *(arr++))
+        if (elements != *(arr++))
         {
             return false;
         }
