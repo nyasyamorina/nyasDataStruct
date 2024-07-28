@@ -6,6 +6,7 @@
 #include "01-ContinuousList.hpp"
 #include "02-SinglyLinkedList.hpp"
 #include "03-DoublyLinkedList.hpp"
+#include "04-Stack.hpp"
 
 using std::cout;
 using std::endl;
@@ -94,6 +95,40 @@ template<class T> std::string test_list()
 }
 
 
+// 测试栈的简单方法 (push, pop, top, length, empty)
+template<class T> std::string test_stack()
+{
+    // 初始化空栈
+    T stack;
+
+    stack.push(1);
+    if (stack.length() != 1 || stack.top() != 1)
+    {
+        return "push failed";
+    }
+
+    stack.push(3);
+    if (stack.length() != 2 || stack.top() != 3)
+    {
+        return "push failed";
+    }
+
+    stack.push(5);
+    int tmp1 = stack.pop();
+    if (stack.length() != 2 || tmp1 != 5)
+    {
+        return "pop failed";
+    }
+
+    stack.empty();
+    if (stack.length() != 0)
+    {
+        return "empty failed";
+    }
+    return "pass";
+}
+
+
 int main()
 {
     std::string info1 = test_list<ContinuousList<int>>();
@@ -104,4 +139,14 @@ int main()
 
     std::string info3 = test_list<DoublyLinkedList<int>>();
     cout << "DoublyLinkedList test: " << info3 << endl;
+
+
+    info1 = test_stack<Stack<int, ContinuousList<int>>>();
+    cout << "Stack using ContinuousList test: " << info1 << endl;
+
+    info2 = test_stack<Stack<int, SinglyLinkedList<int>>>();
+    cout << "Stack using SinglyLinkedList test: " << info2 << endl;
+
+    info3 = test_stack<Stack<int, DoublyLinkedList<int>>>();
+    cout << "Stack using DoublyLinkedList test: " << info3 << endl;
 }
