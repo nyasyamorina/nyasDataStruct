@@ -147,6 +147,7 @@ int main()
     info2 = test_stack<Stack<int, SinglyLinkedList<int>>>();
     cout << "Stack using SinglyLinkedList test: " << info2 << endl;
 
-    info3 = test_stack<Stack<int, DoublyLinkedList<int>>>();
+    // 因为栈默认容器就是双链表, 所以 Stack<int, DoublyLinkedList<int>> 可以简写为 Stack<int>
+    info3 = test_stack<Stack<int>>();
     cout << "Stack using DoublyLinkedList test: " << info3 << endl;
 }
