@@ -331,8 +331,15 @@ public:
         ndtype * node = this->_first;
         // 重新声明链头
         this->_first = node->next;
-        this->_first->prev = nullptr;
-
+        if (this->_first != nullptr)
+        {
+            this->_first->prev = nullptr;
+        }
+        // 如果链已空, 那么需要更改链尾为空
+        else
+        {
+            this->_last = nullptr;
+        }
         eltype result = node->data;
         delete node;
         this->_length--;
@@ -342,9 +349,17 @@ public:
     virtual eltype pop_last() override
     {
         ndtype * node = this->_last;
-        // 重新声明链头
+        // 重新声明链尾
         this->_last = node->prev;
-        this->_last->next = nullptr;
+        if (this->_last != nullptr)
+        {
+            this->_last->next = nullptr;
+        }
+        // 如果链已空, 那么需要更改链头为空
+        else
+        {
+            this->_first = nullptr;
+        }
 
         eltype result = node->data;
         delete node;

@@ -7,6 +7,7 @@
 #include "02-SinglyLinkedList.hpp"
 #include "03-DoublyLinkedList.hpp"
 #include "04-Stack.hpp"
+#include "05-Queue.hpp"
 
 using std::cout;
 using std::endl;
@@ -128,6 +129,45 @@ template<class T> std::string test_stack()
     return "pass";
 }
 
+// 测试队列的简单方法 (push, pop, bottom, length, empty)
+template<class T> std::string test_queue()
+{
+    // 初始化空队列
+    T stack;
+
+    stack.push(1);
+    if (stack.length() != 1 || stack.bottom() != 1)
+    {
+        return "push failed";
+    }
+
+    stack.push(3);
+    if (stack.length() != 2 || stack.bottom() != 1)
+    {
+        return "push failed";
+    }
+
+    stack.push(5);
+    int tmp1 = stack.pop();
+    if (stack.length() != 2 || tmp1 != 1)
+    {
+        return "pop failed";
+    }
+
+    int tmp2 = stack.pop();
+    if (stack.length() != 1 || tmp2 != 3)
+    {
+        return "pop failed";
+    }
+
+    stack.empty();
+    if (stack.length() != 0)
+    {
+        return "empty failed";
+    }
+    return "pass";
+}
+
 
 int main()
 {
@@ -150,4 +190,19 @@ int main()
     // 因为栈默认容器就是双链表, 所以 Stack<int, DoublyLinkedList<int>> 可以简写为 Stack<int>
     info3 = test_stack<Stack<int>>();
     cout << "Stack using DoublyLinkedList test: " << info3 << endl;
+
+
+    info1 = test_queue<Queue<int, ContinuousList<int>>>();
+    cout << "Stack using ContinuousList test: " << info1 << endl;
+
+    info2 = test_queue<Queue<int, SinglyLinkedList<int>>>();
+    cout << "Stack using SinglyLinkedList test: " << info2 << endl;
+
+    // 因为队列默认容器就是双链表, 所以 Queue<int, DoublyLinkedList<int>> 可以简写为 Queue<int>
+    info3 = test_queue<Queue<int>>();
+    cout << "Stack using DoublyLinkedList test: " << info3 << endl;
+
+    // 测试由两个栈组成的垃圾玩意
+    info3 = test_queue<Queue<int, Stack<int>>>();
+    cout << "Stack using two Stack test: " << info3 << endl;
 }
